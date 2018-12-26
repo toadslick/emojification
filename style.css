@@ -1,3 +1,9 @@
 #sprite-canvas {
   border: 5px solid #000;
 }
+
+.swatch::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+}
