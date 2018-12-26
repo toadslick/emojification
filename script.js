@@ -3,6 +3,7 @@ var HEIGHT = FONT_SIZE * 1.1;
 var WIDTH = FONT_SIZE * 1.1;
 
 var INTERVAL_DURATION = 10;
+var TRANSPARENCY_THRESHOLD = 100;
 
 var index = 0;
 var emoji = window.emoji;
@@ -16,18 +17,25 @@ context.font = FONT_SIZE + 'px/1 sans-serif';
 context.textAlign = 'center';
 
 var averageColor = function(imageData) {
-  var color = { r: 0, g: 0, b: 0, a: 0 };
+  var pixelCount = 0;
+  var avgColor = { r: 0, g: 0, b: 0, a: 0 };
   var data = imageData.data;
-  var pixelCount = data.length / colorProps.length;
-  for (var i = 0; i < data.length; i += colorProps.length) {
+  for (var i = 0; i < data.length; i += 4) {
+    var pixelColor = {};
     colorProps.forEach(function(prop, propIndex) {
-      color[prop] += data[i + propIndex];
+      pixelColor[prop] = data[i + propIndex];
     });
+    if (pixelColor.a > TRANSPARENCY_THRESHOLD) {
+      pixelCount += 1;
+      colorProps.forEach(function(prop) {
+        avgColor[prop] += pixelColor[prop];
+      });
+    }
   }
   colorProps.forEach(function(prop) {
-    color[prop] = color[prop] / pixelCount;
+    avgColor[prop] = avgColor[prop] / pixelCount;
   });
-  return color;
+  return avgColor;
 };
 
 var colorString = function(color) {
@@ -51,7 +59,6 @@ var run = function(i) {
   swatch.classList.add('swatch');
   document.body.append(swatch);
   document.body.append(document.createElement('br'));
-
 };
 
 var interval = window.setInterval(function() {
