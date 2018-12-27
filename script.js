@@ -6,6 +6,9 @@ var INTERVAL_DURATION = 10;
 var ALPHA_THRESHOLD = 100;
 var EMOJI_SUBDIVISIONS = 2;
 
+var EMOJI_CANVAS_ID = 'emoji-canvas';
+var IMAGE_CANVAS_ID = 'image-canvas';
+
 var index = 0;
 var emoji = window.emoji;
 var colorProps = ['r', 'g', 'b', 'a'];
@@ -16,12 +19,14 @@ body.addEventListener('click', function() {
   isPaused = !isPaused;
 });
 
-var canvas = document.getElementById('sprite-canvas');
-canvas.setAttribute('height', EMOJI_HEIGHT);
-canvas.setAttribute('width', EMOJI_WIDTH);
-var context = canvas.getContext('2d');
-context.font = EMOJI_SIZE + 'px/1 system';
-context.textAlign = 'center';
+var emojiCanvas = document.getElementById(EMOJI_CANVAS_ID);
+emojiCanvas.setAttribute('height', EMOJI_HEIGHT);
+emojiCanvas.setAttribute('width', EMOJI_WIDTH);
+var emojiContext = emojiCanvas.getContext('2d');
+emojiContext.font = EMOJI_SIZE + 'px/1 system';
+emojiContext.textAlign = 'center';
+
+var imageCanvas = document.getElementById(IMAGE_CANVAS_ID);
 
 var averageColor = function(imageData) {
   var pixelCount = 0;
@@ -75,15 +80,15 @@ var renderSample = function(emojiString, colors) {
 var run = function(i) {
   var sectionColors = [];
   var text = window.emoji[i];
-  context.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
-  context.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
+  emojiContext.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
+  emojiContext.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
 
   var sectionWidth = EMOJI_WIDTH / EMOJI_SUBDIVISIONS;
   var sectionHeight = EMOJI_HEIGHT / EMOJI_SUBDIVISIONS;
 
   for (var y = 0; y < EMOJI_SUBDIVISIONS; y += 1) {
     for (var x = 0; x < EMOJI_SUBDIVISIONS; x += 1) {
-      var data = context.getImageData(x * sectionWidth, y * sectionHeight, sectionWidth, sectionHeight);
+      var data = emojiContext.getImageData(x * sectionWidth, y * sectionHeight, sectionWidth, sectionHeight);
       sectionColors.push(averageColor(data));
     }
   }

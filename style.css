@@ -1,4 +1,14 @@
-#sprite-canvas {
+#sample-image {
+  border: 2px solid #000;
+  display: none;
+}
+
+#image-canvas {
+  display: block;
+  border: 2px solid #000;
+}
+
+#emoji-canvas {
   border: 2px solid #000;
   position: fixed;
   right: 10;
