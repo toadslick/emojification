@@ -1,16 +1,20 @@
-var EMOJI_SIZE = 200;
-var LINE_HEIGHT = 1.1;
-var EMOJI_HEIGHT = EMOJI_SIZE * LINE_HEIGHT;
-var EMOJI_WIDTH = EMOJI_SIZE * LINE_HEIGHT;
+var EMOJI_SIZE = 50;
+var EMOJI_HEIGHT = EMOJI_SIZE;
+var EMOJI_WIDTH = EMOJI_SIZE;
 
 var INTERVAL_DURATION = 10;
 var ALPHA_THRESHOLD = 100;
-var EMOJI_SUBDIVISIONS = 4;
+var EMOJI_SUBDIVISIONS = 3;
 
 var index = 0;
 var emoji = window.emoji;
 var colorProps = ['r', 'g', 'b', 'a'];
+
+var isPaused = false;
 var body = document.body;
+body.addEventListener('click', function() {
+  isPaused = !isPaused;
+});
 
 var canvas = document.getElementById('sprite-canvas');
 canvas.setAttribute('height', EMOJI_HEIGHT);
@@ -51,11 +55,28 @@ var colorString = function(color) {
   return 'rgb(' + values.join(',') + ')';
 };
 
+var renderSample = function(emojiString, colors) {
+  var container = document.createElement('div');
+  container.classList.add('sample');
+  var emoji = document.createElement('span');
+  emoji.classList.add('sample-emoji');
+  emoji.append(document.createTextNode(emojiString));
+  container.append(emoji);
+  colors.forEach(function(color) {
+    var swatch = document.createElement('span');
+    swatch.style.color = colorString(color);
+    swatch.classList.add('sample-swatch');
+    container.append(swatch);
+    container.append(document.createTextNode(' '));
+  });
+  body.append(container);
+}
+
 var run = function(i) {
   var sectionColors = [];
   var text = window.emoji[i];
   context.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
-  context.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE);
+  context.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
 
   var sectionWidth = EMOJI_WIDTH / EMOJI_SUBDIVISIONS;
   var sectionHeight = EMOJI_HEIGHT / EMOJI_SUBDIVISIONS;
@@ -67,18 +88,11 @@ var run = function(i) {
     }
   }
 
-  body.append(document.createTextNode(text));
-  sectionColors.forEach(function(color) {
-    var swatch = document.createElement('span');
-    swatch.style.backgroundColor = colorString(color);
-    swatch.classList.add('swatch');
-    body.append(swatch);
-    body.append(document.createTextNode(' '));
-  });
-  body.append(document.createElement('br'));
+  renderSample(text, sectionColors);
 };
 
 var interval = window.setInterval(function() {
+  if (isPaused) { return; }
   run(index);
   index += 1;
   if (index > emoji.length) {

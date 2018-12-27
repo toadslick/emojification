@@ -5,8 +5,21 @@
   top: 10;
 }
 
-.swatch::before {
-  content: "";
-  display: inline-block;
-  width: 20px;
+.sample {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.sample-swatch::before {
+  content: "⬤";
+}
+
+.sample-emoji {
+  margin-right: 3px;
+  font-size: 25px;
+}
+
+.sample {
+  columns: 2;
 }
