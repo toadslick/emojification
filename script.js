@@ -1,10 +1,11 @@
-var FONT_SIZE = 20;
-var EMOJI_HEIGHT = FONT_SIZE * 1.1;
-var EMOJI_WIDTH = FONT_SIZE * 1.1;
+var EMOJI_SIZE = 200;
+var LINE_HEIGHT = 1.1;
+var EMOJI_HEIGHT = EMOJI_SIZE * LINE_HEIGHT;
+var EMOJI_WIDTH = EMOJI_SIZE * LINE_HEIGHT;
 
 var INTERVAL_DURATION = 10;
-var TRANSPARENCY_THRESHOLD = 100;
-var SUBDIVISIONS = 3;
+var ALPHA_THRESHOLD = 100;
+var EMOJI_SUBDIVISIONS = 4;
 
 var index = 0;
 var emoji = window.emoji;
@@ -15,7 +16,7 @@ var canvas = document.getElementById('sprite-canvas');
 canvas.setAttribute('height', EMOJI_HEIGHT);
 canvas.setAttribute('width', EMOJI_WIDTH);
 var context = canvas.getContext('2d');
-context.font = FONT_SIZE + 'px/1 sans-serif';
+context.font = EMOJI_SIZE + 'px/1 system';
 context.textAlign = 'center';
 
 var averageColor = function(imageData) {
@@ -28,7 +29,7 @@ var averageColor = function(imageData) {
       var n = data[i + propIndex];
       pixelColor[prop] = n * n;
     });
-    if (pixelColor.a > TRANSPARENCY_THRESHOLD) {
+    if (pixelColor.a > ALPHA_THRESHOLD) {
       pixelCount += 1;
       colorProps.forEach(function(prop) {
         avgColor[prop] += pixelColor[prop];
@@ -38,6 +39,7 @@ var averageColor = function(imageData) {
   colorProps.forEach(function(prop) {
     avgColor[prop] = Math.sqrt(avgColor[prop] / pixelCount);
   });
+
   return avgColor;
 };
 
@@ -46,20 +48,20 @@ var colorString = function(color) {
     return color[prop];
   });
   values[3] = values[3] / 255;
-  return 'rgba(' + values.join(',') + ')';
+  return 'rgb(' + values.join(',') + ')';
 };
 
 var run = function(i) {
   var sectionColors = [];
   var text = window.emoji[i];
   context.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
-  context.fillText(text, EMOJI_WIDTH / 2, FONT_SIZE);
+  context.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE);
 
-  var sectionWidth = EMOJI_WIDTH / SUBDIVISIONS;
-  var sectionHeight = EMOJI_HEIGHT / SUBDIVISIONS;
+  var sectionWidth = EMOJI_WIDTH / EMOJI_SUBDIVISIONS;
+  var sectionHeight = EMOJI_HEIGHT / EMOJI_SUBDIVISIONS;
 
-  for (var y = 0; y < SUBDIVISIONS; y += 1) {
-    for (var x = 0; x < SUBDIVISIONS; x += 1) {
+  for (var y = 0; y < EMOJI_SUBDIVISIONS; y += 1) {
+    for (var x = 0; x < EMOJI_SUBDIVISIONS; x += 1) {
       var data = context.getImageData(x * sectionWidth, y * sectionHeight, sectionWidth, sectionHeight);
       sectionColors.push(averageColor(data));
     }

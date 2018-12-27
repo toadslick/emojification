@@ -1,5 +1,8 @@
 #sprite-canvas {
-  border: 5px solid #000;
+  border: 2px solid #000;
+  position: fixed;
+  right: 10;
+  top: 10;
 }
 
 .swatch::before {
