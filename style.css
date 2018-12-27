@@ -3,23 +3,24 @@
   position: fixed;
   right: 10;
   top: 10;
+  background: #eee;
+  padding: 3px;
 }
 
 .sample {
   display: inline-flex;
   align-items: center;
-  padding: 10px;
+  padding: 5px 10px;
 }
 
-.sample-swatch::before {
-  content: "⬤";
+.sample-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-left: 2px;
 }
 
 .sample-emoji {
   margin-right: 3px;
   font-size: 25px;
-}
-
-.sample {
-  columns: 2;
 }

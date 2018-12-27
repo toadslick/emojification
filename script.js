@@ -4,7 +4,7 @@ var EMOJI_WIDTH = EMOJI_SIZE;
 
 var INTERVAL_DURATION = 10;
 var ALPHA_THRESHOLD = 100;
-var EMOJI_SUBDIVISIONS = 3;
+var EMOJI_SUBDIVISIONS = 2;
 
 var index = 0;
 var emoji = window.emoji;
@@ -49,22 +49,22 @@ var averageColor = function(imageData) {
 
 var colorString = function(color) {
   let values = colorProps.map(function(prop) {
-    return color[prop];
+    return Math.floor(color[prop]);
   });
   values[3] = values[3] / 255;
-  return 'rgb(' + values.join(',') + ')';
+  return 'rgba(' + values.join(',') + ')';
 };
 
 var renderSample = function(emojiString, colors) {
   var container = document.createElement('div');
   container.classList.add('sample');
-  var emoji = document.createElement('span');
+  var emoji = document.createElement('div');
   emoji.classList.add('sample-emoji');
   emoji.append(document.createTextNode(emojiString));
   container.append(emoji);
   colors.forEach(function(color) {
-    var swatch = document.createElement('span');
-    swatch.style.color = colorString(color);
+    var swatch = document.createElement('div');
+    swatch.style.backgroundColor = colorString(color);
     swatch.classList.add('sample-swatch');
     container.append(swatch);
     container.append(document.createTextNode(' '));
