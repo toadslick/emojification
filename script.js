@@ -2,22 +2,14 @@ var EMOJI_SIZE = 50;
 var EMOJI_HEIGHT = EMOJI_SIZE;
 var EMOJI_WIDTH = EMOJI_SIZE;
 
-var INTERVAL_DURATION = 10;
+var INTERVAL_DURATION = 0;
 var ALPHA_THRESHOLD = 100;
 var EMOJI_SUBDIVISIONS = 2;
 
 var EMOJI_CANVAS_ID = 'emoji-canvas';
 var IMAGE_CANVAS_ID = 'image-canvas';
 
-var index = 0;
-var emoji = window.emoji;
 var colorProps = ['r', 'g', 'b', 'a'];
-
-var isPaused = false;
-var body = document.body;
-body.addEventListener('click', function() {
-  isPaused = !isPaused;
-});
 
 var emojiCanvas = document.getElementById(EMOJI_CANVAS_ID);
 emojiCanvas.setAttribute('height', EMOJI_HEIGHT);
@@ -60,12 +52,12 @@ var colorString = function(color) {
   return 'rgba(' + values.join(',') + ')';
 };
 
-var renderSample = function(emojiString, colors) {
+var renderEmojiSample = function(string, colors) {
   var container = document.createElement('div');
   container.classList.add('sample');
   var emoji = document.createElement('div');
   emoji.classList.add('sample-emoji');
-  emoji.append(document.createTextNode(emojiString));
+  emoji.append(document.createTextNode(string));
   container.append(emoji);
   colors.forEach(function(color) {
     var swatch = document.createElement('div');
@@ -74,14 +66,13 @@ var renderSample = function(emojiString, colors) {
     container.append(swatch);
     container.append(document.createTextNode(' '));
   });
-  body.append(container);
+  document.body.append(container);
 }
 
-var run = function(i) {
+var sampleColorsForEmoji = function(emoji) {
   var sectionColors = [];
-  var text = window.emoji[i];
   emojiContext.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
-  emojiContext.fillText(text, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
+  emojiContext.fillText(emoji, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
 
   var sectionWidth = EMOJI_WIDTH / EMOJI_SUBDIVISIONS;
   var sectionHeight = EMOJI_HEIGHT / EMOJI_SUBDIVISIONS;
@@ -93,14 +84,44 @@ var run = function(i) {
     }
   }
 
-  renderSample(text, sectionColors);
+  return sectionColors;
 };
 
-var interval = window.setInterval(function() {
-  if (isPaused) { return; }
-  run(index);
-  index += 1;
-  if (index > emoji.length) {
-    window.clearInterval(interval);
-  }
-}, INTERVAL_DURATION);
+
+var processAllEmoji = new Promise(function(resolve, reject) {
+  var index = 0;
+  var results = [];
+  var interval = window.setInterval(function() {
+    if (index >= window.emoji.length) {
+      window.clearInterval(interval);
+      resolve();
+    } else {
+      var currentEmoji = window.emoji[index];
+      var colors = sampleColorsForEmoji(currentEmoji);
+      results.push({
+        string: currentEmoji,
+        colors: colors,
+      });
+      renderEmojiSample(currentEmoji, colors);
+      index += 1;
+    }
+  }, INTERVAL_DURATION);
+});
+
+// var processImage = Promise.new(function(resolve, reject) {
+//   var interval = window.setInterval(function() {
+//     run(index);
+//     index += 1;
+//     if (index > emoji.length) {
+//       window.clearInterval(interval);
+//       resolve();
+//     }
+//   }, INTERVAL_DURATION);
+// });
+
+Promise.all([
+  processAllEmoji,
+  // processImage,
+]).then(function() {
+  console.log('sampling completed!');
+});
