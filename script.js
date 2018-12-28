@@ -1,13 +1,11 @@
 var EMOJI_SIZE = 50;
-var EMOJI_HEIGHT = EMOJI_SIZE;
-var EMOJI_WIDTH = EMOJI_SIZE;
-
 var INTERVAL_DURATION = 0;
 var ALPHA_THRESHOLD = 100;
-var EMOJI_SUBDIVISIONS = 2;
+var SUBDIVISIONS = 2;
 
 var colorProps = ['r', 'g', 'b', 'a'];
 
+var image = document.getElementById('sample-image');
 var emojiCanvas = document.getElementById('emoji-canvas');
 var imageCanvas = document.getElementById('image-canvas');
 var emojiProgressBar = document.getElementById('emoji-progress');
@@ -16,10 +14,15 @@ var imageProgressBar = document.getElementById('image-progress');
 var emojiContext = emojiCanvas.getContext('2d');
 var imageContext = imageCanvas.getContext('2d');
 
-emojiCanvas.setAttribute('height', EMOJI_HEIGHT);
-emojiCanvas.setAttribute('width', EMOJI_WIDTH);
+emojiCanvas.setAttribute('height', EMOJI_SIZE);
+emojiCanvas.setAttribute('width', EMOJI_SIZE);
 emojiContext.font = EMOJI_SIZE + 'px/1 system';
 emojiContext.textAlign = 'center';
+
+imageCanvas.setAttribute('height', image.height);
+imageCanvas.setAttribute('width', image.width);
+imageContext.drawImage(image, 0, 0);
+
 
 var averageColor = function(imageData) {
   var pixelCount = 0;
@@ -59,14 +62,14 @@ var colorString = function(color) {
 
 var sampleColorsForEmoji = function(emoji) {
   var sectionColors = [];
-  emojiContext.clearRect(0, 0, EMOJI_WIDTH, EMOJI_HEIGHT);
-  emojiContext.fillText(emoji, EMOJI_WIDTH / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
+  emojiContext.clearRect(0, 0, EMOJI_SIZE, EMOJI_SIZE);
+  emojiContext.fillText(emoji, EMOJI_SIZE / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
 
-  var sectionWidth = EMOJI_WIDTH / EMOJI_SUBDIVISIONS;
-  var sectionHeight = EMOJI_HEIGHT / EMOJI_SUBDIVISIONS;
+  var sectionWidth = EMOJI_SIZE / SUBDIVISIONS;
+  var sectionHeight = EMOJI_SIZE / SUBDIVISIONS;
 
-  for (var y = 0; y < EMOJI_SUBDIVISIONS; y += 1) {
-    for (var x = 0; x < EMOJI_SUBDIVISIONS; x += 1) {
+  for (var y = 0; y < SUBDIVISIONS; y += 1) {
+    for (var x = 0; x < SUBDIVISIONS; x += 1) {
       var data = emojiContext.getImageData(x * sectionWidth, y * sectionHeight, sectionWidth, sectionHeight);
       sectionColors.push(averageColor(data));
     }
@@ -75,6 +78,9 @@ var sampleColorsForEmoji = function(emoji) {
   return sectionColors;
 };
 
+// var sampleColorsForImageSection = function(x, y) {
+//
+// }
 
 var processAllEmoji = new Promise(function(resolve, reject) {
   var index = 0;
@@ -97,7 +103,7 @@ var processAllEmoji = new Promise(function(resolve, reject) {
   }, INTERVAL_DURATION);
 });
 
-// var processImage = Promise.new(function(resolve, reject) {
+// var processImage = new Promise(function(resolve, reject) {
 //   var interval = window.setInterval(function() {
 //     run(index);
 //     index += 1;
