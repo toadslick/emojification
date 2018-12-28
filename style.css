@@ -1,5 +1,4 @@
 #sample-image {
-  border: 2px solid #000;
   display: none;
 }
 
@@ -9,28 +8,24 @@
 }
 
 #emoji-canvas {
-  border: 2px solid #000;
+  display: none;
+}
+
+#progress-bars {
   position: fixed;
-  right: 10;
-  top: 10;
+  top: 0;
+  left: 0;
+  right: 0;
   background: #eee;
-  padding: 3px;
 }
 
-.sample {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 10px;
+.progress-bar {
+  height: 5px;
+  width: 0;
+  margin-right: auto;
+  transition: width 0.1s;
 }
 
-.sample-swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  margin-left: 2px;
-}
-
-.sample-emoji {
-  margin-right: 3px;
-  font-size: 25px;
+#emoji-progress {
+  background-color: red;
 }
