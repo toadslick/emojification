@@ -4,10 +4,36 @@
     <link rel='stylesheet' type='text/css' href='style.css'>
 </head>
 <body>
-  <div id='progress-bar-container'>
+
+  <div id='form-container'>
+    <form>
+      <div>
+        <label>Emoji Size</label>
+        <input type='range' id='emoji-size' min='5' max='100' value='50' step='5' />
+      </div>
+      <div>
+        <label>Samples per Emoji</label>
+        <select id='samples-per-emoji'>
+          <option value='1'>1</option>
+          <option selected value='2'>4</option>
+          <option value='3'>9</option>
+          <option value='4'>16</option>
+        </select>
+      </div>
+      <div>
+        <label>Image to Emojify</label>
+        <input type='file' />
+      </div>
+      <div>
+        <button type='submit'>Emojify!</button>
+      </div>
+    </form>
+    <div id='progress-bar-container'></div>
   </div>
+
   <canvas id='image-canvas'/>
   <canvas id='emoji-canvas'/>
+
   <script src='dist/main.js'></script>
 </body>
 </html>
