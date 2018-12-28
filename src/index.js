@@ -1,9 +1,9 @@
 import emojiList from './emoji-list';
 import ProgressBar from './progress-bar';
 import Color from './color';
+import IterativeTask from './iterative-task';
 
 var EMOJI_SIZE = 50;
-var INTERVAL_DURATION = 0;
 var SUBDIVISIONS = 2;
 
 var sampleSize = EMOJI_SIZE / SUBDIVISIONS;
@@ -48,16 +48,16 @@ var sampleColorsForSection = function(context, originX, originY) {
   return colors;
 }
 
-var processAllEmoji = new Promise(function(resolve, reject) {
-  var progressBar = new ProgressBar('emoji-progress', 0, emojiList.length);
+function processEmoji(emojiArray) {
   var index = 0;
+  var progressBar = new ProgressBar('emoji-progress', index, emojiArray.length);
   var results = [];
-  var interval = window.setInterval(function() {
-    if (index >= emojiList.length) {
-      window.clearInterval(interval);
-      resolve(results);
+
+  return new IterativeTask(function(finish) {
+    if (index >= emojiArray.length) {
+      finish(results);
     } else {
-      var currentEmoji = emojiList[index];
+      var currentEmoji = emojiArray[index];
       results.push({
         string: currentEmoji,
         colors: sampleColorsForEmoji(currentEmoji),
@@ -65,8 +65,9 @@ var processAllEmoji = new Promise(function(resolve, reject) {
       progressBar.update(index);
       index += 1;
     }
-  }, INTERVAL_DURATION);
-});
+  });
+}
+
 //
 // var processImage = new Promise(function(resolve, reject) {
 //   var x = 0;
@@ -94,7 +95,7 @@ var processAllEmoji = new Promise(function(resolve, reject) {
 // });
 
 Promise.all([
-  processAllEmoji,
+  processEmoji(emojiList),
   // processImage,
 ]).then(function(results) {
   console.log('sampling completed!', arguments);
