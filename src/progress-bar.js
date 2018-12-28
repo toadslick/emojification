@@ -4,7 +4,7 @@ export default class ProgressBar {
     this.min = min;
     this.max = max;
     this.node = document.getElementById(id);
-    
+
     if (this.node === null) {
       this.node = document.createElement('div');
       this.node.setAttribute('id', id);

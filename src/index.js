@@ -1,7 +1,7 @@
-import emojiList from './emoji-list';
 import ProgressBar from './progress-bar';
-import Color from './color';
 import IterativeTask from './iterative-task';
+import emojiList from './emoji-list';
+import sampleCanvasSection from './sample-canvas-section';
 
 var EMOJI_SIZE = 50;
 var SUBDIVISIONS = 2;
@@ -21,52 +21,16 @@ emojiCanvas.setAttribute('width', EMOJI_SIZE);
 emojiContext.font = EMOJI_SIZE + 'px/1 system';
 emojiContext.textAlign = 'center';
 
-// imageCanvas.setAttribute('height', image.height);
-// imageCanvas.setAttribute('width', image.width);
-// imageContext.drawImage(image, 0, 0);
-
-var sampleColorsForEmoji = function(emoji) {
-  emojiContext.clearRect(0, 0, EMOJI_SIZE, EMOJI_SIZE);
-  emojiContext.fillText(emoji, EMOJI_SIZE / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
-  return sampleColorsForSection(emojiContext, 0, 0);
-};
-
-var sampleColorsForSection = function(context, originX, originY) {
-  var colors = [];
-  for (var y = 0; y < SUBDIVISIONS; y += 1) {
-    for (var x = 0; x < SUBDIVISIONS; x += 1) {
-      var data = context.getImageData(
-        originX + (x * sampleSize),
-        originY + (y * sampleSize),
-        sampleSize,
-        sampleSize
-      );
-
-      colors.push(Color.averageFromImageData(data));
-    }
-  }
-  return colors;
-}
-
 function processEmoji(emojiArray) {
-  var index = 0;
-  var progressBar = new ProgressBar('emoji-progress', index, emojiArray.length);
-  var results = [];
-
-  return new IterativeTask(function(finish) {
-    if (index >= emojiArray.length) {
-      finish(results);
-    } else {
-      var currentEmoji = emojiArray[index];
-      results.push({
-        string: currentEmoji,
-        colors: sampleColorsForEmoji(currentEmoji),
-      });
-      progressBar.update(index);
-      index += 1;
-    }
+  return new IterativeTask('process-emoji', emojiArray, function(emoji) {
+    emojiContext.clearRect(0, 0, EMOJI_SIZE, EMOJI_SIZE);
+    emojiContext.fillText(emoji, EMOJI_SIZE / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
+    return {
+      string: emoji,
+      colors: sampleCanvasSection(emojiContext, 0, 0, EMOJI_SIZE, SUBDIVISIONS),
+    };
   });
-}
+};
 
 //
 // var processImage = new Promise(function(resolve, reject) {
