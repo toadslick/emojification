@@ -1,4 +1,5 @@
 import emojiList from './emoji-list';
+import ProgressBar from './progress-bar';
 
 var EMOJI_SIZE = 50;
 var INTERVAL_DURATION = 0;
@@ -11,8 +12,6 @@ var colorProps = ['r', 'g', 'b', 'a'];
 var image = document.getElementById('sample-image');
 var emojiCanvas = document.getElementById('emoji-canvas');
 var imageCanvas = document.getElementById('image-canvas');
-var emojiProgressBar = document.getElementById('emoji-progress');
-var imageProgressBar = document.getElementById('image-progress');
 
 var emojiContext = emojiCanvas.getContext('2d');
 var imageContext = imageCanvas.getContext('2d');
@@ -50,10 +49,6 @@ var averageColor = function(imageData) {
   return avgColor;
 };
 
-var updateProgressBar = function(node, current, max) {
-  node.style.width = Math.ceil((current / max) * 100) + '%';
-};
-
 var colorString = function(color) {
   let values = colorProps.map(function(prop) {
     return Math.floor(color[prop]);
@@ -86,11 +81,11 @@ var sampleColorsForSection = function(context, originX, originY) {
 }
 
 var processAllEmoji = new Promise(function(resolve, reject) {
+  var progressBar = new ProgressBar('emoji-progress', 0, emojiList.length);
   var index = 0;
   var results = [];
-  var emojiCount = emojiList.length;
   var interval = window.setInterval(function() {
-    if (index >= emojiCount) {
+    if (index >= emojiList.length) {
       window.clearInterval(interval);
       resolve(results);
     } else {
@@ -99,7 +94,7 @@ var processAllEmoji = new Promise(function(resolve, reject) {
         string: currentEmoji,
         colors: sampleColorsForEmoji(currentEmoji),
       });
-      updateProgressBar(emojiProgressBar, index, emojiCount);
+      progressBar.update(index);
       index += 1;
     }
   }, INTERVAL_DURATION);

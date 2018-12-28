@@ -16,20 +16,17 @@ html, body {
   display: none;
 }
 
-#progress-bars {
+#progress-bar-container {
   background: #ddd;
 }
 
-.progress-bar {
+#progress-bar-container div {
   height: 4px;
   width: 0;
   margin-right: auto;
+  background: #000;
 }
 
 #emoji-progress {
-  background-color: red;
-}
-
-#image-progress {
-  background-color: blue;
+  background: red;
 }
