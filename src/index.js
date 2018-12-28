@@ -1,9 +1,9 @@
 import emojiList from './emoji-list';
 import ProgressBar from './progress-bar';
+import averageColor from './average-color';
 
 var EMOJI_SIZE = 50;
 var INTERVAL_DURATION = 0;
-var ALPHA_THRESHOLD = 100;
 var SUBDIVISIONS = 2;
 
 var sampleSize = EMOJI_SIZE / SUBDIVISIONS;
@@ -24,30 +24,6 @@ emojiContext.textAlign = 'center';
 // imageCanvas.setAttribute('height', image.height);
 // imageCanvas.setAttribute('width', image.width);
 // imageContext.drawImage(image, 0, 0);
-
-var averageColor = function(imageData) {
-  var pixelCount = 0;
-  var avgColor = { r: 0, g: 0, b: 0, a: 0 };
-  var data = imageData.data;
-  for (var i = 0; i < data.length; i += 4) {
-    var pixelColor = {};
-    colorProps.forEach(function(prop, propIndex) {
-      var n = data[i + propIndex];
-      pixelColor[prop] = n * n;
-    });
-    if (pixelColor.a > ALPHA_THRESHOLD) {
-      pixelCount += 1;
-      colorProps.forEach(function(prop) {
-        avgColor[prop] += pixelColor[prop];
-      });
-    }
-  }
-  colorProps.forEach(function(prop) {
-    avgColor[prop] = Math.sqrt(avgColor[prop] / pixelCount);
-  });
-
-  return avgColor;
-};
 
 var colorString = function(color) {
   let values = colorProps.map(function(prop) {

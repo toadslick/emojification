@@ -24,9 +24,5 @@ html, body {
   height: 4px;
   width: 0;
   margin-right: auto;
-  background: #000;
-}
-
-#emoji-progress {
   background: red;
 }
