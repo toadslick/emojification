@@ -1,0 +1,13 @@
+{
+  "name": "emojify",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "~4.28.2",
+    "webpack-cli": "~3.1.2"
+  }
+}

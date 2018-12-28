@@ -1,3 +1,5 @@
+import emojiList from './emoji-list';
+
 var EMOJI_SIZE = 50;
 var INTERVAL_DURATION = 0;
 var ALPHA_THRESHOLD = 100;
@@ -20,9 +22,9 @@ emojiCanvas.setAttribute('width', EMOJI_SIZE);
 emojiContext.font = EMOJI_SIZE + 'px/1 system';
 emojiContext.textAlign = 'center';
 
-imageCanvas.setAttribute('height', image.height);
-imageCanvas.setAttribute('width', image.width);
-imageContext.drawImage(image, 0, 0);
+// imageCanvas.setAttribute('height', image.height);
+// imageCanvas.setAttribute('width', image.width);
+// imageContext.drawImage(image, 0, 0);
 
 var averageColor = function(imageData) {
   var pixelCount = 0;
@@ -86,13 +88,13 @@ var sampleColorsForSection = function(context, originX, originY) {
 var processAllEmoji = new Promise(function(resolve, reject) {
   var index = 0;
   var results = [];
-  var emojiCount = window.emoji.length;
+  var emojiCount = emojiList.length;
   var interval = window.setInterval(function() {
     if (index >= emojiCount) {
       window.clearInterval(interval);
       resolve(results);
     } else {
-      var currentEmoji = window.emoji[index];
+      var currentEmoji = emojiList[index];
       results.push({
         string: currentEmoji,
         colors: sampleColorsForEmoji(currentEmoji),
@@ -102,35 +104,35 @@ var processAllEmoji = new Promise(function(resolve, reject) {
     }
   }, INTERVAL_DURATION);
 });
-
-var processImage = new Promise(function(resolve, reject) {
-  var x = 0;
-  var y = 0;
-  var totalSections = Math.ceil(image.width / EMOJI_SIZE) * Math.ceil(image.height / EMOJI_SIZE);
-  var results = [];
-  var interval = window.setInterval(function() {
-    if (y > image.height) {
-      window.clearInterval(interval);
-      resolve(results);
-    } else {
-      results.push({
-        x: x,
-        y: y,
-        colors: sampleColorsForSection(imageContext, x, y),
-      });
-      updateProgressBar(imageProgressBar, (x * y) + x, totalSections);
-      x += EMOJI_SIZE;
-      if (x > image.width) {
-        x = 0;
-        y += EMOJI_SIZE;
-      }
-    }
-  }, INTERVAL_DURATION);
-});
+//
+// var processImage = new Promise(function(resolve, reject) {
+//   var x = 0;
+//   var y = 0;
+//   var totalSections = Math.ceil(image.width / EMOJI_SIZE) * Math.ceil(image.height / EMOJI_SIZE);
+//   var results = [];
+//   var interval = window.setInterval(function() {
+//     if (y > image.height) {
+//       window.clearInterval(interval);
+//       resolve(results);
+//     } else {
+//       results.push({
+//         x: x,
+//         y: y,
+//         colors: sampleColorsForSection(imageContext, x, y),
+//       });
+//       updateProgressBar(imageProgressBar, (x * y) + x, totalSections);
+//       x += EMOJI_SIZE;
+//       if (x > image.width) {
+//         x = 0;
+//         y += EMOJI_SIZE;
+//       }
+//     }
+//   }, INTERVAL_DURATION);
+// });
 
 Promise.all([
   processAllEmoji,
-  processImage,
+  // processImage,
 ]).then(function(results) {
   console.log('sampling completed!', arguments);
 });

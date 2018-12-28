@@ -1,4 +1,4 @@
-window.emoji = [
+export default [
 '\uD83D\uDE00',
 '\uD83D\uDE03',
 '\uD83D\uDE04',
