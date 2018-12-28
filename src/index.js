@@ -1,6 +1,7 @@
 import IterativeTask from './iterative-task';
 import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
+import readImageFile from './read-image-file';
 
 const emojiCanvas       = document.getElementById('emoji-canvas'      );
 const imageCanvas       = document.getElementById('image-canvas'      );
@@ -10,31 +11,35 @@ const sampleCountInput  = document.getElementById('input-sample-count');
 const imageFileInput    = document.getElementById('input-image-file'  );
 
 const emojiContext = emojiCanvas.getContext('2d');
-// const imageContext = imageCanvas.getContext('2d');
-// imageContext.textAlign = 'center';
+const imageContext = imageCanvas.getContext('2d');
 
 form.addEventListener('submit', function(e) {
   e.preventDefault();
   const emojiSize = parseInt(emojiSizeInput.value);
   const subdivisions = parseInt(sampleCountInput.value);
-  run(emojiSize, subdivisions);
+  const file = imageFileInput.files[0];
+  if (file) {
+    run(emojiSize, subdivisions, file);
+  } else {
+    console.log('Error: no file was provided.');
+  }
 });
 
-function run(emojiSize, subdivisions) {
-  emojiCanvas.setAttribute('height', emojiSize);
-  emojiCanvas.setAttribute('width', emojiSize);
-  emojiContext.font = emojiSize + 'px/1 system';
-  emojiContext.textAlign = 'center';
-
+function run(emojiSize, subdivisions, file) {
   Promise.all([
     processEmoji(emojiList, emojiSize, subdivisions),
-    // processImage,
+    processImage(file, emojiSize, subdivisions),
   ]).then(function(results) {
     console.log('sampling completed!', arguments);
   });
 };
 
 function processEmoji(emojiArray, emojiSize, subdivisions) {
+  emojiCanvas.setAttribute('height', emojiSize);
+  emojiCanvas.setAttribute('width', emojiSize);
+  emojiContext.font = emojiSize + 'px/1 system';
+  emojiContext.textAlign = 'center';
+
   return new IterativeTask('process-emoji', emojiArray, function(emoji) {
     emojiContext.clearRect(0, 0, emojiSize, emojiSize);
     emojiContext.fillText(emoji, emojiSize / 2, emojiSize - (emojiSize * 0.05));
@@ -45,7 +50,16 @@ function processEmoji(emojiArray, emojiSize, subdivisions) {
   });
 };
 
-
+function processImage(file, emojiSize, subdivisions) {
+  readImageFile(file).then((image) => {
+    const { width, height } = image;
+    imageCanvas.width = width;
+    imageCanvas.height = height;
+    imageContext.drawImage(image, 0, 0, width, height);
+    return image;
+    // return new IterativeTask('process-image', image, function())
+  });
+}
 
 
 

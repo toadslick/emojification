@@ -18,4 +18,4 @@ export default function sampleCanvasSection(context2D, originX, originY, section
   }
 
   return results;
-}
+};
