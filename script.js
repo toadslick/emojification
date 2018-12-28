@@ -3,6 +3,7 @@ var INTERVAL_DURATION = 0;
 var ALPHA_THRESHOLD = 100;
 var SUBDIVISIONS = 2;
 
+var sampleSize = EMOJI_SIZE / SUBDIVISIONS;
 var colorProps = ['r', 'g', 'b', 'a'];
 
 var image = document.getElementById('sample-image');
@@ -22,7 +23,6 @@ emojiContext.textAlign = 'center';
 imageCanvas.setAttribute('height', image.height);
 imageCanvas.setAttribute('width', image.width);
 imageContext.drawImage(image, 0, 0);
-
 
 var averageColor = function(imageData) {
   var pixelCount = 0;
@@ -61,26 +61,27 @@ var colorString = function(color) {
 };
 
 var sampleColorsForEmoji = function(emoji) {
-  var sectionColors = [];
   emojiContext.clearRect(0, 0, EMOJI_SIZE, EMOJI_SIZE);
   emojiContext.fillText(emoji, EMOJI_SIZE / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
-
-  var sectionWidth = EMOJI_SIZE / SUBDIVISIONS;
-  var sectionHeight = EMOJI_SIZE / SUBDIVISIONS;
-
-  for (var y = 0; y < SUBDIVISIONS; y += 1) {
-    for (var x = 0; x < SUBDIVISIONS; x += 1) {
-      var data = emojiContext.getImageData(x * sectionWidth, y * sectionHeight, sectionWidth, sectionHeight);
-      sectionColors.push(averageColor(data));
-    }
-  }
-
-  return sectionColors;
+  return sampleColorsForSection(emojiContext, 0, 0);
 };
 
-// var sampleColorsForImageSection = function(x, y) {
-//
-// }
+var sampleColorsForSection = function(context, originX, originY) {
+  var colors = [];
+  for (var y = 0; y < SUBDIVISIONS; y += 1) {
+    for (var x = 0; x < SUBDIVISIONS; x += 1) {
+      var data = context.getImageData(
+        originX + (x * sampleSize),
+        originY + (y * sampleSize),
+        sampleSize,
+        sampleSize
+      );
+
+      colors.push(averageColor(data));
+    }
+  }
+  return colors;
+}
 
 var processAllEmoji = new Promise(function(resolve, reject) {
   var index = 0;
@@ -92,10 +93,9 @@ var processAllEmoji = new Promise(function(resolve, reject) {
       resolve(results);
     } else {
       var currentEmoji = window.emoji[index];
-      var colors = sampleColorsForEmoji(currentEmoji);
       results.push({
         string: currentEmoji,
-        colors: colors,
+        colors: sampleColorsForEmoji(currentEmoji),
       });
       updateProgressBar(emojiProgressBar, index, emojiCount);
       index += 1;
@@ -103,20 +103,34 @@ var processAllEmoji = new Promise(function(resolve, reject) {
   }, INTERVAL_DURATION);
 });
 
-// var processImage = new Promise(function(resolve, reject) {
-//   var interval = window.setInterval(function() {
-//     run(index);
-//     index += 1;
-//     if (index > emoji.length) {
-//       window.clearInterval(interval);
-//       resolve();
-//     }
-//   }, INTERVAL_DURATION);
-// });
+var processImage = new Promise(function(resolve, reject) {
+  var x = 0;
+  var y = 0;
+  var totalSections = Math.ceil(image.width / EMOJI_SIZE) * Math.ceil(image.height / EMOJI_SIZE);
+  var results = [];
+  var interval = window.setInterval(function() {
+    if (y > image.height) {
+      window.clearInterval(interval);
+      resolve(results);
+    } else {
+      results.push({
+        x: x,
+        y: y,
+        colors: sampleColorsForSection(imageContext, x, y),
+      });
+      updateProgressBar(imageProgressBar, (x * y) + x, totalSections);
+      x += EMOJI_SIZE;
+      if (x > image.width) {
+        x = 0;
+        y += EMOJI_SIZE;
+      }
+    }
+  }, INTERVAL_DURATION);
+});
 
 Promise.all([
   processAllEmoji,
-  // processImage,
+  processImage,
 ]).then(function(results) {
-  console.log('sampling completed!', results);
+  console.log('sampling completed!', arguments);
 });
