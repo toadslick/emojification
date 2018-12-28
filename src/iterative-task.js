@@ -10,8 +10,8 @@ export default class IterativeTask {
 
       const interval = window.setInterval(function() {
         results.push(task(items[index]));
-        progressBar.update(index);
         index += 1;
+        progressBar.update(index);
         if (index >= items.length) {
           window.clearInterval(interval);
           resolve(results);

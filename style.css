@@ -4,6 +4,10 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+canvas {
+  display: none;
+}
+
 #form-container {
   /* position: fixed;
   left: 0;
@@ -40,19 +44,6 @@ input[type=file] {
   padding: 1px;
 }
 
-#sample-image {
-  display: none;
-}
-
-#image-canvas {
-  display: block;
-  border: 2px solid #000;
-}
-
-#emoji-canvas {
-  display: none;
-}
-
 #progress-bar-container {
   background: #ddd;
 }
@@ -62,5 +53,4 @@ input[type=file] {
   width: 0;
   margin-right: auto;
   background: red;
-  transition: width 0.2s;
 }

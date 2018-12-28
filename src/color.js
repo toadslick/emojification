@@ -13,10 +13,10 @@ export default class Color {
     const averageColor = new Color();
     let includedPixelCount = 0;
 
-    for (var i = 0; i < data.length; i += CHANNELS.length) {
-      var pixelColor = {};
+    for (let i = 0; i < data.length; i += CHANNELS.length) {
+      const pixelColor = {};
       CHANNELS.forEach(function(prop, propIndex) {
-        var n = data[i + propIndex];
+        const n = data[i + propIndex];
         pixelColor[prop] = n * n;
       });
       if (pixelColor.a > ALPHA_THRESHOLD) {
