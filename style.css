@@ -5,17 +5,17 @@ html, body {
 }
 
 #form-container {
-  position: fixed;
+  /* position: fixed;
   left: 0;
   top: 0;
-  right: 0;
+  right: 0; */
   background-color: #eee;
 }
 
 form {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   padding: 10px;
   margin: 0;
@@ -23,6 +23,10 @@ form {
 
 form > div {
   text-align: center;
+}
+
+form > div:last-child {
+  align-self: center;
 }
 
 label {
@@ -33,7 +37,7 @@ label {
 input[type=file] {
   background: #ddd;
   border-radius: 4px;
-  padding: 2px;
+  padding: 1px;
 }
 
 #sample-image {
@@ -54,8 +58,9 @@ input[type=file] {
 }
 
 #progress-bar-container div {
-  height: 4px;
+  height: 2px;
   width: 0;
   margin-right: auto;
   background: red;
+  transition: width 0.2s;
 }
