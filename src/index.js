@@ -1,6 +1,6 @@
 import emojiList from './emoji-list';
 import ProgressBar from './progress-bar';
-import averageColor from './average-color';
+import Color from './color';
 
 var EMOJI_SIZE = 50;
 var INTERVAL_DURATION = 0;
@@ -25,14 +25,6 @@ emojiContext.textAlign = 'center';
 // imageCanvas.setAttribute('width', image.width);
 // imageContext.drawImage(image, 0, 0);
 
-var colorString = function(color) {
-  let values = colorProps.map(function(prop) {
-    return Math.floor(color[prop]);
-  });
-  values[3] = values[3] / 255;
-  return 'rgba(' + values.join(',') + ')';
-};
-
 var sampleColorsForEmoji = function(emoji) {
   emojiContext.clearRect(0, 0, EMOJI_SIZE, EMOJI_SIZE);
   emojiContext.fillText(emoji, EMOJI_SIZE / 2, EMOJI_SIZE - (EMOJI_SIZE * 0.05));
@@ -50,7 +42,7 @@ var sampleColorsForSection = function(context, originX, originY) {
         sampleSize
       );
 
-      colors.push(averageColor(data));
+      colors.push(Color.averageFromImageData(data));
     }
   }
   return colors;
