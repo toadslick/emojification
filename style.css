@@ -46,11 +46,16 @@ input[type=file] {
 
 #progress-bar-container {
   background: #ddd;
+  padding: 2px;
 }
 
 #progress-bar-container div {
-  height: 2px;
+  height: 1px;
   width: 0;
-  margin-right: auto;
   background: red;
+  transition: width 0.2s;
+}
+
+#progress-bar-container div + div {
+  margin-top: 2px;
 }
