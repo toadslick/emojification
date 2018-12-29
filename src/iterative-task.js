@@ -1,7 +1,7 @@
 import ProgressBar from './progress-bar';
 
 export default class IterativeTask {
-  constructor(name, items, task) {
+  constructor(name, items, task, delay) {
 
     return new Promise(function(resolve, reject) {
       const progressBar = new ProgressBar(name, 0, items.length);
@@ -16,7 +16,7 @@ export default class IterativeTask {
           window.clearInterval(interval);
           resolve(results);
         }
-      }, 0);
+      }, delay || 0);
     });
   }
 }

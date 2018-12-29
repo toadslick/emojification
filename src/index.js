@@ -37,7 +37,7 @@ function run(emojiSize, subdivisions, file) {
 function processEmoji(emojiArray, emojiSize, subdivisions) {
   emojiCanvas.setAttribute('height', emojiSize);
   emojiCanvas.setAttribute('width', emojiSize);
-  emojiContext.font = emojiSize + 'px/1 system';
+  emojiContext.font = emojiSize + 'px/1 "Apple Color Emoji"';
   emojiContext.textAlign = 'center';
 
   return new IterativeTask('process-emoji', emojiArray, function(emoji) {
@@ -91,15 +91,12 @@ function matchEmoji([emojiSamples, imageSamples]) {
     });
 
     if (section.x == 0) {
-      outputContainer.append(document.createTextNode('\n'));
+      outputContainer.append(document.createElement('br'));
     }
-    outputContainer.append(document.createTextNode(result.emoji.string));
+    const span = document.createElement('span');
+    span.append(document.createTextNode(result.emoji.string));
+    outputContainer.append(span);
 
     return result;
-  });
-}
-
-function renderMosaic(results) {
-  results.forEach(function(result) {
-  });
+  }, 50);
 }

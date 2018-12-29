@@ -1,7 +1,6 @@
 import { rgba_to_lab } from 'color-diff/lib/convert';
 import { ciede2000 } from 'color-diff/lib/diff';
 
-const ALPHA_THRESHOLD = 100; // out of 255
 const CHANNELS = ['R', 'G', 'B', 'A'];
 
 const privateRGBA = Symbol('rgba');
@@ -48,12 +47,10 @@ export default class Color {
         pixelRGBA[prop] = n * n;
       });
 
-      if (pixelRGBA.A > ALPHA_THRESHOLD) {
-        includedPixelCount += 1;
-        CHANNELS.forEach(function(prop) {
-          averageRGBA[prop] += pixelRGBA[prop];
-        });
-      }
+      includedPixelCount += 1;
+      CHANNELS.forEach(function(prop) {
+        averageRGBA[prop] += pixelRGBA[prop];
+      });
     }
 
     CHANNELS.forEach(function(prop) {
