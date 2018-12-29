@@ -58,3 +58,9 @@ input[type=file] {
 #progress-bar-container div + div {
   margin-top: 2px;
 }
+
+#output-container {
+  width: 100%;
+  white-space: pre;
+  overflow: scroll;
+}

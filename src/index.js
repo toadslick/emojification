@@ -10,6 +10,7 @@ const form              = document.getElementById('form'              );
 const emojiSizeInput    = document.getElementById('input-emoji-size'  );
 const sampleCountInput  = document.getElementById('input-sample-count');
 const imageFileInput    = document.getElementById('input-image-file'  );
+const outputContainer   = document.getElementById('output-container'  );
 
 const emojiContext = emojiCanvas.getContext('2d');
 const imageContext = imageCanvas.getContext('2d');
@@ -30,11 +31,7 @@ function run(emojiSize, subdivisions, file) {
   Promise.all([
     processEmoji(emojiList, emojiSize, subdivisions),
     processImage(file, emojiSize, subdivisions),
-  ]).then(function([emojiSamples, imageSamples]) {
-    return matchEmoji(emojiSamples, imageSamples);
-  }).then(function(results) {
-    console.log('RESULTS', results);
-  });
+  ]).then(matchEmoji);
 };
 
 function processEmoji(emojiArray, emojiSize, subdivisions) {
@@ -71,7 +68,9 @@ function processImage(file, emojiSize, subdivisions) {
   });
 }
 
-function matchEmoji(emojiSamples, imageSamples) {
+function matchEmoji([emojiSamples, imageSamples]) {
+  outputContainer.innerHTML = '';
+
   return new IterativeTask('match-emoji', imageSamples, function(section) {
 
     let result = {
@@ -91,6 +90,16 @@ function matchEmoji(emojiSamples, imageSamples) {
       }
     });
 
+    if (section.x == 0) {
+      outputContainer.append(document.createTextNode('\n'));
+    }
+    outputContainer.append(document.createTextNode(result.emoji.string));
+
     return result;
+  });
+}
+
+function renderMosaic(results) {
+  results.forEach(function(result) {
   });
 }
