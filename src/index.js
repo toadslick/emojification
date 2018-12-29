@@ -4,13 +4,14 @@ import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
 import readImageFile from './read-image-file';
 
-const emojiCanvas       = document.getElementById('emoji-canvas'      );
-const imageCanvas       = document.getElementById('image-canvas'      );
-const form              = document.getElementById('form'              );
-const emojiSizeInput    = document.getElementById('input-emoji-size'  );
+const emojiCanvas       = document.getElementById('emoji-canvas');
+const imageCanvas       = document.getElementById('image-canvas');
+const form              = document.getElementById('form');
+const emojiSizeInput    = document.getElementById('input-emoji-size');
 const sampleCountInput  = document.getElementById('input-sample-count');
-const imageFileInput    = document.getElementById('input-image-file'  );
-const outputContainer   = document.getElementById('output-container'  );
+const imageFileInput    = document.getElementById('input-image-file');
+const outputContainer   = document.getElementById('output-container');
+const progressContainer = document.getElementById('progress-bar-container');
 
 const emojiContext = emojiCanvas.getContext('2d');
 const imageContext = imageCanvas.getContext('2d');
@@ -28,6 +29,9 @@ form.addEventListener('submit', function(e) {
 });
 
 function run(emojiSize, subdivisions, file) {
+  outputContainer.innerHTML = '';
+  progressContainer.innerHTML = '';
+
   Promise.all([
     processEmoji(emojiList, emojiSize, subdivisions),
     processImage(file, emojiSize, subdivisions),
@@ -59,44 +63,45 @@ function processImage(file, emojiSize, subdivisions) {
     imageContext.drawImage(image, 0, 0, width, height);
     return new IterativeTask('process-image', buildImageSections(image, emojiSize), function({ x, y, size }) {
       const colors = sampleCanvasSection(imageContext, x, y, size, subdivisions);
+      const cacheKey = colors.map(c => c.css).join('');
       return {
         x,
         y,
-        colors
+        colors,
+        cacheKey,
       };
     });
   });
 }
 
 function matchEmoji([emojiSamples, imageSamples]) {
-  outputContainer.innerHTML = '';
+  let cache = {};
 
   return new IterativeTask('match-emoji', imageSamples, function(section) {
-
-    let result = {
-      section: section,
-      emoji: null,
-    }
+    let bestFitEmoji = null;
     let lowestDistance = Infinity;
 
-    emojiSamples.forEach((emoji) => {
-      let totalDistance = 0;
-      emoji.colors.forEach((color, index) => {
-        totalDistance += color.distance(section.colors[index]);
+    if (cache[section.cacheKey]) {
+      bestFitEmoji = cache[section.cacheKey];
+    } else {
+      emojiSamples.forEach((emoji) => {
+        let totalDistance = 0;
+        emoji.colors.forEach((color, index) => {
+          totalDistance += color.distance(section.colors[index]);
+        });
+        if (totalDistance < lowestDistance) {
+          lowestDistance = totalDistance;
+          bestFitEmoji = emoji;
+        }
       });
-      if (totalDistance < lowestDistance) {
-        lowestDistance = totalDistance;
-        result.emoji = emoji;
-      }
-    });
+      cache[section.cacheKey] = bestFitEmoji;
+    }
 
-    if (section.x == 0) {
+    if (section.x == 0 && section.y != 0) {
       outputContainer.append(document.createElement('br'));
     }
     const span = document.createElement('span');
-    span.append(document.createTextNode(result.emoji.string));
+    span.append(document.createTextNode(bestFitEmoji.string));
     outputContainer.append(span);
-
-    return result;
-  }, 50);
+  });
 }
