@@ -1,7 +1,7 @@
 import { rgba_to_lab } from 'color-diff/lib/convert';
 import { ciede2000 } from 'color-diff/lib/diff';
 
-const ALPHA_THRESHOLD = 100;
+const ALPHA_THRESHOLD = 100; // out of 255
 const CHANNELS = ['R', 'G', 'B', 'A'];
 
 const privateRGBA = Symbol('rgba');
@@ -10,9 +10,8 @@ const privateCSS = Symbol('css');
 
 function cssString(rgba) {
   let values = CHANNELS.map(function(prop) {
-    return Math.round(rgba[prop]);
+    return rgba[prop];
   });
-  values[3] = Math.round((values[3] / 255) * 100) / 100;
   return 'rgba(' + values.join(',') + ')';
 }
 
@@ -43,10 +42,12 @@ export default class Color {
 
     for (let i = 0; i < data.length; i += CHANNELS.length) {
       const pixelRGBA = {};
+
       CHANNELS.forEach(function(prop, propIndex) {
         const n = data[i + propIndex];
         pixelRGBA[prop] = n * n;
       });
+
       if (pixelRGBA.A > ALPHA_THRESHOLD) {
         includedPixelCount += 1;
         CHANNELS.forEach(function(prop) {
@@ -54,9 +55,13 @@ export default class Color {
         });
       }
     }
+
     CHANNELS.forEach(function(prop) {
-      averageRGBA[prop] = Math.sqrt(averageRGBA[prop] / includedPixelCount);
+      const sqrt = Math.sqrt(averageRGBA[prop] / includedPixelCount);
+      averageRGBA[prop] = sqrt || 0; // handle NaN
     });
+
+    averageRGBA.A = averageRGBA.A / 255;
 
     return new Color(averageRGBA);
   }

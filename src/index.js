@@ -1,5 +1,5 @@
 import IterativeTask from './iterative-task';
-import imageSections from './image-sections';
+import buildImageSections from './image-sections';
 import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
 import readImageFile from './read-image-file';
@@ -30,8 +30,10 @@ function run(emojiSize, subdivisions, file) {
   Promise.all([
     processEmoji(emojiList, emojiSize, subdivisions),
     processImage(file, emojiSize, subdivisions),
-  ]).then(function() {
-    console.log('sampling completed!', arguments);
+  ]).then(function([emojiSamples, imageSamples]) {
+    return matchEmoji(emojiSamples, imageSamples);
+  }).then(function(results) {
+    console.log('RESULTS', results);
   });
 };
 
@@ -45,7 +47,10 @@ function processEmoji(emojiArray, emojiSize, subdivisions) {
     emojiContext.clearRect(0, 0, emojiSize, emojiSize);
     emojiContext.fillText(emoji, emojiSize / 2, emojiSize - (emojiSize * 0.05));
     const colors = sampleCanvasSection(emojiContext, 0, 0, emojiSize, subdivisions);
-    return { emoji, colors };
+    return {
+      string: emoji,
+      colors
+    };
   });
 };
 
@@ -55,9 +60,37 @@ function processImage(file, emojiSize, subdivisions) {
     imageCanvas.width = width;
     imageCanvas.height = height;
     imageContext.drawImage(image, 0, 0, width, height);
-    return new IterativeTask('process-image', imageSections(image, emojiSize), function({ x, y, size }) {
+    return new IterativeTask('process-image', buildImageSections(image, emojiSize), function({ x, y, size }) {
       const colors = sampleCanvasSection(imageContext, x, y, size, subdivisions);
-      return { x, y, colors };
+      return {
+        x,
+        y,
+        colors
+      };
     });
+  });
+}
+
+function matchEmoji(emojiSamples, imageSamples) {
+  return new IterativeTask('match-emoji', imageSamples, function(section) {
+
+    let result = {
+      section: section,
+      emoji: null,
+    }
+    let lowestDistance = Infinity;
+
+    emojiSamples.forEach((emoji) => {
+      let totalDistance = 0;
+      emoji.colors.forEach((color, index) => {
+        totalDistance += color.distance(section.colors[index]);
+      });
+      if (totalDistance < lowestDistance) {
+        lowestDistance = totalDistance;
+        result.emoji = emoji;
+      }
+    });
+
+    return result;
   });
 }
