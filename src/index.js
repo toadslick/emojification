@@ -3,6 +3,7 @@ import buildImageSections from './image-sections';
 import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
 import readImageFile from './read-image-file';
+import registerEvents from './register-events';
 
 const emojiCanvas       = document.getElementById('emoji-canvas');
 const imageCanvas       = document.getElementById('image-canvas');
@@ -19,8 +20,15 @@ const imageContext = imageCanvas.getContext('2d');
 
 const tasks = [];
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
+registerEvents([
+  { element: form             , event: 'submit' , handler: formSubmitted            , propagate: false },
+  { element: cancelButton     , event: 'click'  , handler: cancel                   , propagate: false },
+  { element: emojiSizeInput   , event: 'change' , handler: updateEmojiSizeIndicator , propagate: true  },
+  { element: sampleCountInput , event: 'change' , handler: updateSampleIndicator    , propagate: true  },
+  { element: imageFileInput   , event: 'change' , handler: updateFileIndicator      , propagate: true  },
+]);
+
+function formSubmitted() {
   const emojiSize = parseInt(emojiSizeInput.value);
   const subdivisions = parseInt(sampleCountInput.value);
   const file = imageFileInput.files[0];
@@ -29,12 +37,25 @@ form.addEventListener('submit', function(e) {
   } else {
     console.log('Error: no file was provided.');
   }
-});
+};
 
-cancelButton.addEventListener('click', function(e) {
-  e.preventDefault();
-  cancel();
-});
+function cancel() {
+  while (tasks.length > 0) {
+    tasks.pop().cancel();
+  }
+};
+
+function updateEmojiSizeIndicator(element) {
+  console.log('TODO: display emoji size');
+};
+
+function updateSampleIndicator(element) {
+  console.log('TODO: display sample size');
+};
+
+function updateFileIndicator(element) {
+  console.log('TODO: display sample size');
+};
 
 function run(emojiSize, subdivisions, file) {
   cancel();
@@ -48,12 +69,6 @@ function run(emojiSize, subdivisions, file) {
   .then(matchEmoji)
   .catch(err => console.log(err));
 };
-
-function cancel() {
-  while (tasks.length > 0) {
-    tasks.pop().cancel();
-  }
-}
 
 function processEmoji(emojiArray, emojiSize, subdivisions) {
   emojiCanvas.setAttribute('height', emojiSize);

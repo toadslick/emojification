@@ -53,12 +53,15 @@ input[type=file] {
 #progress-bar-container div {
   height: 3px;
   width: 0;
-  background: red;
 }
 
 #progress-bar-container div + div {
   margin-top: 2px;
 }
+
+#process-emoji { background: limegreen;     }
+#process-image { background: deepskyblue;   }
+#match-emoji   { background: lightseagreen; }
 
 #output-container {
   text-align: center;
