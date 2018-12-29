@@ -1,0 +1,14 @@
+- indicators for values of form controls
+  - emoji size
+  - sample size
+  - image file
+
+- controls to affect display
+  - font size
+  - blur
+
+- style fixes
+  - mobile device media queries
+  - fix emoji display in safari
+
+- disable form until image file is uploaded
