@@ -1,59 +1,20 @@
 import Task from './task';
+import FormManager from './form-manager';
 import buildImageSections from './image-sections';
 import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
 import readImageFile from './read-image-file';
-import registerEvents from './register-events';
 
-const emojiCanvas       = document.getElementById('emoji-canvas');
-const imageCanvas       = document.getElementById('image-canvas');
-const form              = document.getElementById('form');
-const emojiSizeInput    = document.getElementById('input-emoji-size');
-const sampleCountInput  = document.getElementById('input-sample-count');
-const imageFileInput    = document.getElementById('input-image-file');
-const outputContainer   = document.getElementById('output-container');
-const cancelButton      = document.getElementById('cancel-button');
-
+const outputContainer = document.getElementById('output-container');
+const emojiCanvas = document.getElementById('emoji-canvas');
+const imageCanvas = document.getElementById('image-canvas');
 const emojiContext = emojiCanvas.getContext('2d');
 const imageContext = imageCanvas.getContext('2d');
 
-registerEvents([
-  { element: form             , event: 'submit' , handler: formSubmitted            , propagate: false },
-  { element: cancelButton     , event: 'click'  , handler: cancel                   , propagate: false },
-  { element: emojiSizeInput   , event: 'change' , handler: updateEmojiSizeIndicator , propagate: true  },
-  { element: sampleCountInput , event: 'change' , handler: updateSampleIndicator    , propagate: true  },
-  { element: imageFileInput   , event: 'change' , handler: updateFileIndicator      , propagate: true  },
-]);
+new FormManager(start, stop);
 
-function formSubmitted() {
-  const emojiSize = parseInt(emojiSizeInput.value);
-  const subdivisions = parseInt(sampleCountInput.value);
-  const file = imageFileInput.files[0];
-  if (file) {
-    run(emojiSize, subdivisions, file);
-  } else {
-    console.log('Error: no file was provided.');
-  }
-};
-
-function cancel() {
-  Task.cancelAll();
-};
-
-function updateEmojiSizeIndicator(element) {
-  console.log('TODO: display emoji size');
-};
-
-function updateSampleIndicator(element) {
-  console.log('TODO: display sample size');
-};
-
-function updateFileIndicator(element) {
-  console.log('TODO: display sample size');
-};
-
-function run(emojiSize, subdivisions, file) {
-  cancel();
+function start(emojiSize, subdivisions, file) {
+  stop();
   outputContainer.innerHTML = '';
 
   Promise.all([
@@ -62,6 +23,10 @@ function run(emojiSize, subdivisions, file) {
   ])
   .then(matchEmoji)
   .catch(err => console.log(err));
+};
+
+function stop() {
+  Task.cancelAll();
 };
 
 function processEmoji(emojiArray, emojiSize, subdivisions) {
@@ -99,7 +64,7 @@ function processImage(file, emojiSize, subdivisions) {
       };
     }).promise;
   });
-}
+};
 
 function matchEmoji([emojiSamples, imageSamples]) {
   let cache = {};
@@ -131,4 +96,4 @@ function matchEmoji([emojiSamples, imageSamples]) {
     span.append(document.createTextNode(bestFitEmoji.string));
     outputContainer.append(span);
   }).promise;
-}
+};
