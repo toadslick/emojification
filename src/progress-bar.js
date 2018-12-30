@@ -16,6 +16,10 @@ export default class ProgressBar {
     let percent = (value - this.min) / (this.max - this.min);
     percent = Math.max(0, Math.min(100, Math.ceil(percent * 100)));
     this.node.style.width = percent + '%';
+
+    // All progress bars appear on top of each other.
+    // This ensures that the longest bars are always below the shorter bars.
+    this.node.style.zIndex = 100 - percent;
   }
 
   get container() {
