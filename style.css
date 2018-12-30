@@ -78,5 +78,8 @@ input[type=file] {
   text-align: center;
   width: 1em;
   height: 1em;
-  overflow: hidden;
+  line-height: 1;
+
+  /* attempt to hide non-emoji characters */
+  color: #fff;
 }

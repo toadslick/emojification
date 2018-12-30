@@ -12,3 +12,5 @@
   - fix emoji display in safari
 
 - disable form until image file is uploaded
+
+- use canvas to test for and exclude unsupported emoji that appear as multiple characters
