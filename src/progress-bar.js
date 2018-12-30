@@ -1,4 +1,4 @@
-export default class ProgressBar {
+class ProgressBar {
 
   constructor(id, min, max) {
     this.min = min;
@@ -8,7 +8,7 @@ export default class ProgressBar {
     if (this.node === null) {
       this.node = document.createElement('div');
       this.node.setAttribute('id', id);
-      this.container.append(this.node);
+      ProgressBar.container.append(this.node);
     }
   }
 
@@ -22,7 +22,11 @@ export default class ProgressBar {
     this.node.style.zIndex = 100 - percent;
   }
 
-  get container() {
-    return document.getElementById('progress-bar-container');
+  static clearAll() {
+    ProgressBar.container.innerHTML = '';
   }
 };
+
+ProgressBar.container = document.getElementById('progress-bar-container');
+
+export default ProgressBar;

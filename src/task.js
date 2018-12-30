@@ -1,6 +1,6 @@
 import ProgressBar from './progress-bar';
 
-export default class IterativeTask {
+class Task {
   // name
   // promise
   // interval
@@ -27,10 +27,24 @@ export default class IterativeTask {
         }
       }, delay || 0);
     });
+
+    Task.all.push(this);
   }
 
   cancel() {
     window.clearInterval(this.interval);
     this.reject(`Task was cancelled: "${this.name}"`);
   }
+
+  static cancelAll() {
+    const { all } = Task;
+    while (all.length > 0) {
+      all.pop().cancel();
+    }
+    ProgressBar.clearAll();
+  }
 }
+
+Task.all = [];
+
+export default Task;
