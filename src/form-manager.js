@@ -14,7 +14,7 @@ export default class Form {
     registerEvents([
       { element: e.form             , event: 'submit' , handler: this.submit          , propagate: false },
       { element: e.cancelButton     , event: 'click'  , handler: this.cancel          , propagate: false },
-      { element: e.emojiSizeInput   , event: 'change' , handler: this.updateEmojiSize , propagate: true  },
+      { element: e.emojiSizeInput   , event: 'input'  , handler: this.updateEmojiSize , propagate: true  },
       { element: e.sampleCountInput , event: 'change' , handler: this.updateSample    , propagate: true  },
       { element: e.imageFileInput   , event: 'change' , handler: this.updateFile      , propagate: true  },
     ], this);
@@ -50,7 +50,11 @@ export default class Form {
   }
 
   updateEmojiSize(element) {
-    console.log('TODO: display emoji size');
+    const {
+      emojiSizeIndicator,
+      emojiSizeInput,
+    } = this.elements;
+    emojiSizeIndicator.innerHTML = emojiSizeInput.value;
   }
 
   updateSample(element) {
@@ -64,9 +68,10 @@ export default class Form {
 
 function registerEvents(objects, scope) {
   objects.forEach(function({ element, event, handler, propagate }) {
+    const boundHandler = handler.bind(scope);
     element.addEventListener(event, function(e) {
       if (!propagate) { e.preventDefault(); }
-      handler.bind(scope)(element, e);
+      boundHandler();
     });
   });
 };

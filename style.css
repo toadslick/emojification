@@ -1,7 +1,7 @@
 html, body {
   padding: 0;
   margin: 0;
-  font-family: "Apple Color Emoji";
+  font-family: "Apple Color Emoji",  "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 canvas {
@@ -17,7 +17,7 @@ canvas {
 }
 
 form {
-  font-family: system, sans-serif;
+  font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -37,6 +37,7 @@ form > div:last-child {
 label {
   display: block;
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 input[type=file] {
