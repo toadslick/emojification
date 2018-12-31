@@ -8,24 +8,39 @@ canvas {
   display: none;
 }
 
-#image-fields {
+.form-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  background-color: #f4f4f4;
+}
+
+.form {
   font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: center;
   flex-wrap: wrap;
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ccc;
 }
 
-#image-fields > div {
+.form > div {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-around;
   padding: 10px 20px;
   text-align: center;
+}
+
+.form .buttons {
+  flex-direction: row;
+  align-items: center;
+}
+
+button + button {
+  margin-left: 15px;
 }
 
 #input-image-file {
@@ -63,8 +78,8 @@ input[type=file] {
   width: 0;
 }
 
-#process-emoji { background: cornflowerblue; }
-#process-image { background: limegreen; }
+#process-emoji { background: hotpink; }
+#process-image { background: cornflowerblue; }
 #match-emoji   { background: orange; }
 
 #output-container {
