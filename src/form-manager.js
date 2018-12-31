@@ -8,6 +8,8 @@ export default class Form {
       sampleCountInput   : document.getElementById( 'input-sample-count'   ),
       imageFileInput     : document.getElementById( 'input-image-file'     ),
       cancelButton       : document.getElementById( 'cancel-button'        ),
+      uploadButton       : document.getElementById( 'upload-button'        ),
+      submitButton       : document.getElementById( 'submit-button'        ),
       emojiSizeIndicator : document.getElementById( 'emoji-size-indicator' ),
       sampleIndicator    : document.getElementById( 'sample-indicator'     ),
       fileIndicator      : document.getElementById( 'file-indicator'       ),
@@ -16,8 +18,9 @@ export default class Form {
     registerEvents([
       { element: e.form             , event: 'submit' , handler: this.submit          , propagate: false },
       { element: e.cancelButton     , event: 'click'  , handler: this.cancel          , propagate: false },
+      { element: e.uploadButton     , event: 'click'  , handler: this.openFileDialog  , propagate: false },
       { element: e.emojiSizeInput   , event: 'input'  , handler: this.updateEmojiSize , propagate: true  },
-      { element: e.sampleCountInput , event: 'input' , handler: this.updateSample    , propagate: true  },
+      { element: e.sampleCountInput , event: 'input'  , handler: this.updateSample    , propagate: true  },
       { element: e.imageFileInput   , event: 'change' , handler: this.updateFile      , propagate: true  },
     ], this);
 
@@ -27,6 +30,8 @@ export default class Form {
 
     this.updateEmojiSize();
     this.updateSample();
+
+    this.allowSubmit = false;
   }
 
   submit() {
@@ -49,6 +54,11 @@ export default class Form {
 
   cancel() {
     this.onCancel();
+  }
+
+  openFileDialog() {
+    const { imageFileInput } = this.elements;
+    imageFileInput.click();
   }
 
   updateEmojiSize() {
@@ -75,10 +85,21 @@ export default class Form {
     readImageFile(imageFileInput.files[0]).then((image) => {
       const { width, height } = image;
       fileIndicator.textContent = `${width} × ${height} pixels`;
+      this.allowSubmit = true;
     }, () => {
       fileIndicator.innerHTML = "<span class='error'>Please choose an image file.</span>";
       imageFileInput.value = null;
+      this.allowSubmit = false;
     });
+  }
+
+  set allowSubmit(value) {
+    const { submitButton } = this.elements;
+    if (value) {
+      submitButton.removeAttribute('disabled');
+    } else {
+      submitButton.setAttribute('disabled', true);
+    }
   }
 };
 

@@ -9,11 +9,7 @@ canvas {
 }
 
 #form-container {
-  /* position: fixed;
-  left: 0;
-  top: 0;
-  right: 0; */
-  background-color: #eee;
+  background-color: #f4f4f4;
 }
 
 form {
@@ -27,12 +23,16 @@ form {
 }
 
 form > div {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
   padding: 15px;
+  text-align: center;
 }
 
 form > div:last-child {
-  display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -40,9 +40,13 @@ form button + button {
   margin-left: 20px;
 }
 
+#input-image-file {
+  display: none;
+}
+
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   font-size: 14px;
 }
 
@@ -53,8 +57,9 @@ input[type=file] {
 }
 
  .value-indicator {
-   margin-top: 5px;
+   margin-top: 7px;
    font-size: 12px;
+   font-weight: 500;
  }
 
  .value-indicator .error {
