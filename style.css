@@ -2,6 +2,7 @@ html, body {
   padding: 0;
   margin: 0;
   font-family: "Apple Color Emoji",  "Segoe UI Emoji", "Segoe UI Symbol";
+  text-align: center;
 }
 
 canvas {
@@ -31,7 +32,6 @@ canvas {
   align-items: stretch;
   justify-content: space-around;
   padding: 10px 20px;
-  text-align: center;
 }
 
 .form .buttons {
@@ -87,9 +87,15 @@ input[type=file] {
   white-space: nowrap;
   line-height: 1;
   letter-spacing: -3;
-  padding: 20px 0 40px 0;
-  width: 100%;
-  overflow-x: scroll;
+  margin: 10px auto 30px auto;
+  background-color: #fff;
+  display: inline-block;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+#output-container:empty {
+  background: none;
 }
 
 #output-container span {
@@ -101,4 +107,20 @@ input[type=file] {
 
   /* attempt to hide non-emoji characters */
   color: #fff;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #222;
+  }
+
+  #output-container span {
+    color: #222;
+  }
+
+  .form-container {
+    background-color: #444;
+    color: #fff;
+  }
 }
