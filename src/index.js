@@ -3,7 +3,6 @@ import FormManager from './form-manager';
 import buildImageSections from './image-sections';
 import emojiList from './emoji-list';
 import sampleCanvasSection from './sample-canvas-section';
-import readImageFile from './read-image-file';
 
 const outputContainer = document.getElementById('output-container');
 const emojiCanvas = document.getElementById('emoji-canvas');
@@ -13,13 +12,13 @@ const imageContext = imageCanvas.getContext('2d');
 
 new FormManager(start, stop);
 
-function start(emojiSize, subdivisions, file) {
+function start(emojiSize, subdivisions, image) {
   stop();
   outputContainer.innerHTML = '';
 
   Promise.all([
     processEmoji(emojiList, emojiSize, subdivisions),
-    processImage(file, emojiSize, subdivisions),
+    processImage(image, emojiSize, subdivisions),
   ])
   .then(matchEmoji)
   .catch(err => console.log(err));
@@ -46,24 +45,24 @@ function processEmoji(emojiArray, emojiSize, subdivisions) {
   }).promise;
 };
 
-function processImage(file, emojiSize, subdivisions) {
-  return readImageFile(file).then((image) => {
-    const { width, height } = image;
-    imageCanvas.width = width;
-    imageCanvas.height = height;
-    imageContext.drawImage(image, 0, 0, width, height);
+function processImage(image, emojiSize, subdivisions) {
+  const { width, height } = image;
+  imageCanvas.width = width;
+  imageCanvas.height = height;
+  imageContext.drawImage(image, 0, 0, width, height);
 
-    return new Task('process-image', buildImageSections(image, emojiSize), function({ x, y, size }) {
-      const colors = sampleCanvasSection(imageContext, x, y, size, subdivisions);
-      const cacheKey = colors.map(c => c.css).join('');
-      return {
-        x,
-        y,
-        colors,
-        cacheKey,
-      };
-    }).promise;
-  });
+  return new Task('process-image', buildImageSections(image, emojiSize), function({ x, y, size }) {
+    const colors = sampleCanvasSection(imageContext, x, y, size, subdivisions);
+    // Improve performance by caching the returned emoji for a given combination of color samples.
+    // This helps when an image contains large areas of solid color.
+    const cacheKey = colors.map(c => c.css).join('');
+    return {
+      x,
+      y,
+      colors,
+      cacheKey,
+    };
+  }).promise;
 };
 
 function matchEmoji([emojiSamples, imageSamples]) {

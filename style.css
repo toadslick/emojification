@@ -8,36 +8,27 @@ canvas {
   display: none;
 }
 
-#form-container {
-  background-color: #f4f4f4;
-}
-
-form {
+#image-fields {
   font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  justify-content: space-evenly;
+  justify-content: center;
   flex-wrap: wrap;
-  margin: 0;
+  margin: auto;
+  padding: 0;
+  background-color: #f4f4f4;
+  border: none;
+  border-bottom: 1px solid #ccc;
 }
 
-form > div {
+#image-fields > div {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: space-between;
-  padding: 15px;
+  justify-content: space-around;
+  padding: 10px 20px;
   text-align: center;
-}
-
-form > div:last-child {
-  flex-direction: row;
-  align-items: center;
-}
-
-form button + button {
-  margin-left: 20px;
 }
 
 #input-image-file {
@@ -62,12 +53,7 @@ input[type=file] {
    font-weight: 500;
  }
 
- .value-indicator .error {
-   color: red;
- }
-
 #progress-bar-container {
-  background: #ddd;
   height: 3px;
   position: relative;
 }
@@ -76,7 +62,7 @@ input[type=file] {
   position: absolute;
   left: 0;
   top: 0;
-  height: 3px;
+  bottom: 0;
   width: 0;
 }
 
