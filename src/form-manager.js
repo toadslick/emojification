@@ -1,3 +1,5 @@
+import readImageFile from './read-image-file';
+
 export default class Form {
   constructor(onSubmmit, onCancel) {
     const e = {
@@ -15,7 +17,7 @@ export default class Form {
       { element: e.form             , event: 'submit' , handler: this.submit          , propagate: false },
       { element: e.cancelButton     , event: 'click'  , handler: this.cancel          , propagate: false },
       { element: e.emojiSizeInput   , event: 'input'  , handler: this.updateEmojiSize , propagate: true  },
-      { element: e.sampleCountInput , event: 'change' , handler: this.updateSample    , propagate: true  },
+      { element: e.sampleCountInput , event: 'input' , handler: this.updateSample    , propagate: true  },
       { element: e.imageFileInput   , event: 'change' , handler: this.updateFile      , propagate: true  },
     ], this);
 
@@ -49,20 +51,34 @@ export default class Form {
     this.onCancel();
   }
 
-  updateEmojiSize(element) {
+  updateEmojiSize() {
     const {
       emojiSizeIndicator,
-      emojiSizeInput,
+      emojiSizeInput: { value },
     } = this.elements;
-    emojiSizeIndicator.innerHTML = emojiSizeInput.value;
+    emojiSizeIndicator.textContent = `${value} × ${value} pixels`;
   }
 
-  updateSample(element) {
-    console.log('TODO: display sample size');
+  updateSample() {
+    const {
+      sampleIndicator,
+      sampleCountInput: { value },
+    } = this.elements;
+    sampleIndicator.textContent = `${Math.pow(value, 2)} colors`;
   }
 
-  updateFile(element) {
-    console.log('TODO: display sample size');
+  updateFile() {
+    const {
+      fileIndicator,
+      imageFileInput,
+    } = this.elements;
+    readImageFile(imageFileInput.files[0]).then((image) => {
+      const { width, height } = image;
+      fileIndicator.textContent = `${width} × ${height} pixels`;
+    }, () => {
+      fileIndicator.innerHTML = "<span class='error'>Please choose an image file.</span>";
+      imageFileInput.value = null;
+    });
   }
 };
 

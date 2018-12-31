@@ -46,6 +46,15 @@ input[type=file] {
   padding: 1px;
 }
 
+ .value-indicator {
+   margin-top: 10px;
+   font-size: 12px;
+ }
+
+ .value-indicator .error {
+   color: red;
+ }
+
 #progress-bar-container {
   background: #ddd;
   height: 3px;
@@ -62,7 +71,7 @@ input[type=file] {
 
 #process-emoji { background: cornflowerblue; }
 #process-image { background: limegreen; }
-#match-emoji   { background: red; }
+#match-emoji   { background: orange; }
 
 #output-container {
   text-align: center;

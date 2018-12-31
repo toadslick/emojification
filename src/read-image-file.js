@@ -11,6 +11,10 @@ export default function readImage(file) {
       image.src = reader.result;
     };
 
+    image.onerror = function() {
+      reject();
+    }
+
     reader.readAsDataURL(file);
   });
 };
