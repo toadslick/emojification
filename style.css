@@ -15,10 +15,7 @@ canvas {
   align-items: stretch;
   justify-content: center;
   flex-wrap: wrap;
-  margin: auto;
-  padding: 0;
   background-color: #f4f4f4;
-  border: none;
   border-bottom: 1px solid #ccc;
 }
 
@@ -47,11 +44,11 @@ input[type=file] {
   padding: 1px;
 }
 
- .value-indicator {
-   margin-top: 7px;
-   font-size: 12px;
-   font-weight: 500;
- }
+.value-indicator {
+  margin-top: 7px;
+  font-size: 12px;
+  font-weight: 500;
+}
 
 #progress-bar-container {
   height: 3px;
