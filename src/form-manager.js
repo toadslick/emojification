@@ -48,7 +48,7 @@ export default class Form {
       emojiSizeIndicator,
       emojiSizeInput: { value },
     } = this.elements;
-    emojiSizeIndicator.textContent = `${value} × ${value} pixels`;
+    emojiSizeIndicator.textContent = `${value} × ${value} pixels per emoji`;
   }
 
   updateSample() {
@@ -56,7 +56,7 @@ export default class Form {
       sampleIndicator,
       sampleCountInput: { value },
     } = this.elements;
-    sampleIndicator.textContent = `${Math.pow(value, 2)} colors`;
+    sampleIndicator.textContent = `${Math.pow(value, 2)} samples per emoji`;
   }
 
   updateBlur() {

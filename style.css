@@ -43,6 +43,10 @@ button + button {
   margin-left: 15px;
 }
 
+input[type=range] {
+  min-width: 200px;
+}
+
 #input-image-file {
   display: none;
 }
